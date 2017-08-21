@@ -1,0 +1,31 @@
+*{
+	font-family: arial;
+	font-style: bold;
+}
+body{
+	padding: 1em;
+	margin: 1em;
+}
+h1{
+	font-color: black;
+	margin:40px;
+}
+textBox{
+	width: 60px;
+	margin: 0 10px 0 10px;
+	
+}
+operator-style{
+	width: 40px;
+	margin: 0 10px 0 10px;
+}
+.hide{
+	visibility: collapse;
+}
+.show{
+	visibility: visible;
+}
+.number-button-style{
+	width: 30px;
+	height: 30px;
+}
