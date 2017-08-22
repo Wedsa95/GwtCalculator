@@ -4,7 +4,6 @@ package com.jonas.olsson.gwt.client;
 import java.util.ArrayList;
 
 import com.google.gwt.core.client.EntryPoint;
-import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.FocusEvent;
@@ -12,12 +11,10 @@ import com.google.gwt.event.dom.client.FocusHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
-import com.google.gwt.event.logical.shared.AttachEvent.Handler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.FlexTable;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
@@ -31,12 +28,16 @@ public class Calculator implements EntryPoint {
 	private VerticalPanel numberOneButtonPanel = new VerticalPanel();
 	private VerticalPanel operatorButtonPanel = new VerticalPanel();
 	private VerticalPanel numberTwoButtonPanel = new VerticalPanel();
+	
 	private FlexTable calcTable = new FlexTable();
 	private FlexTable numberOneButtonTable = new FlexTable();
 	private FlexTable operatorButtonTable = new FlexTable();
 	private FlexTable numberTwoButtonTable = new FlexTable();
 	
 	private Button calcButton = new Button("Calculate");
+	private ArrayList<Button> numberButtons = new ArrayList<>();
+	private ArrayList<Button> operatorButtons = new ArrayList<>();
+	
 	private TextBox numberOne = new TextBox();
 	private TextBox numberTwo = new TextBox();
 	private TextBox operatorBox = new TextBox();
@@ -58,6 +59,10 @@ public class Calculator implements EntryPoint {
 		
 		//TO DO lägga till klik bara knappar
 		//Dom kommer nog ta texten på kanppen sen räkna ut det
+		
+		
+		
+		//TO DO KOLLA IN FLOW PANEL PÅ 
 		addNumberButtons();
 		addOperatorButtons();
 		
@@ -97,19 +102,25 @@ public class Calculator implements EntryPoint {
 		int k = 0;
 		for(int i = 0; i < 3; i++) {
 			for(int j = 0; j < 3; j++) {
-				numberOneButtonTable.setWidget(i, j, new Button(buttonOptionArray[k]));
+				
+				numberButtons.add(new Button(buttonOptionArray[k],handler));
+				numberOneButtonTable.setWidget(i, j, numberButtons.get(k));
 				k++;
 			}
 		}
-		numberOneButtonTable.setWidget(3,0, new Button(buttonOptionArray[k]));
+		numberButtons.add(new Button(buttonOptionArray[k],handler));
+		numberOneButtonTable.setWidget(3,0, numberButtons.get(k));
 		k++;
-		numberOneButtonTable.setWidget(3,1, new Button(buttonOptionArray[k]));
+		numberButtons.add(new Button(buttonOptionArray[k],handler));
+		numberOneButtonTable.setWidget(3,1, numberButtons.get(k));
 		numberOneButtonTable.setVisible(false);
 	}
 	
 	public void addOperatorButtons() {
 		for(int i = 0; i < operatorOptionArray.length; i++) {
-			operatorButtonTable.setWidget(i, 0, new Button(operatorOptionArray[i]));
+			operatorButtons.add(new Button(operatorOptionArray[i],handler));
+			operatorButtons.get(i).addClickHandler(handler);
+			operatorButtonTable.setWidget(0, i, new Button(operatorOptionArray[i]));
 		}
 		operatorButtonTable.setVisible(false);
 	}
@@ -183,7 +194,10 @@ public class Calculator implements EntryPoint {
 		
 		@Override
 		public void onKeyUp(KeyUpEvent event) {
-			// TODO Auto-generated method stub
+			// TODO att den inte ger focus till nummer knapparna 
+			if(event.getNativeKeyCode() == KeyCodes.KEY_TAB) {
+				
+			}
 			if(event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 			
 				if(!isOperator(operatorBox.getValue().trim()) || !isNumber(numberOne.getText().trim()) || !isNumber(numberTwo.getText().trim())) {
@@ -197,6 +211,11 @@ public class Calculator implements EntryPoint {
 		@Override
 		public void onClick(ClickEvent event) {
 			Widget sender = (Widget) event.getSource();
+			for(int i = 0; i< operatorButtons.size(); i++) {
+				if(event.getSource() == operatorButtons.get(i)) {
+					operatorBox.setText("" + operatorOptionArray[i]); 
+				}
+			}
 			
 			
 			if(sender.equals(calcButton)) {
@@ -205,8 +224,6 @@ public class Calculator implements EntryPoint {
 					return;
 				}
 					calculate();
-			}else {
-				
 			}
 				
 		}
