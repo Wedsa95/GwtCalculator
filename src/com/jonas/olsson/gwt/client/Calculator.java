@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.RootPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
-import com.google.gwt.user.client.ui.Widget;
 
 
 public class Calculator implements EntryPoint {
@@ -35,36 +34,30 @@ public class Calculator implements EntryPoint {
 	private FlexTable numberTwoButtonTable = new FlexTable();
 	
 	private Button calcButton = new Button("Calculate");
-	private ArrayList<Button> numberButtons = new ArrayList<>();
+	private ArrayList<Button> numberButtonsOne = new ArrayList<>();
+	private ArrayList<Button> numberButtonsTwo = new ArrayList<>();
 	private ArrayList<Button> operatorButtons = new ArrayList<>();
 	
 	private TextBox numberOne = new TextBox();
 	private TextBox numberTwo = new TextBox();
 	private TextBox operatorBox = new TextBox();
 	
-	private String[] buttonOptionArray = {"1","2","3","4","5","6","7","8","9","0","."};
+	private String[] buttonOptionArray = {"1","2","3","4","5","6","7","8","9","0",".","-"};
 	private String[] operatorOptionArray = {"+","-","/","%","*"};
 	private ArrayList<Calculation> calcultions = new ArrayList<>();
 	
 	private EventHandler handler = new EventHandler();
 
-
 	@Override
 	public void onModuleLoad() {
-		/*
-		numberOne.addStyleName("textBox");
-		numberTwo.addStyleName("textBox");
-		*/
-		operatorBox.addStyleName("operator-style");
 		
 		//TO DO lägga till klik bara knappar
 		//Dom kommer nog ta texten på kanppen sen räkna ut det
 		
-		
-		
 		//TO DO KOLLA IN FLOW PANEL PÅ 
 		addNumberButtons();
 		addOperatorButtons();
+		addStyles();
 		
 		numberOneButtonPanel.add(numberOne);
 		numberOneButtonPanel.add(numberOneButtonTable);
@@ -80,9 +73,6 @@ public class Calculator implements EntryPoint {
 		
 		hPanel.add(calcButton);
 		vPanel.add(calcTable);
-		
-		calcTable.setText(0, 0, "equation");
-		calcTable.setText(0, 1, "awnser");
 		
 		numberOne.addKeyUpHandler(handler);
 		numberOne.addFocusHandler(handler);
@@ -101,26 +91,27 @@ public class Calculator implements EntryPoint {
 	public void addNumberButtons() {
 		int k = 0;
 		for(int i = 0; i < 3; i++) {
-			for(int j = 0; j < 3; j++) {
+			for(int j = 0; j < 4; j++) {
 				
-				numberButtons.add(new Button(buttonOptionArray[k],handler));
-				numberOneButtonTable.setWidget(i, j, numberButtons.get(k));
+				numberButtonsOne.add(new Button(buttonOptionArray[k],handler));
+				numberButtonsTwo.add(new Button(buttonOptionArray[k],handler));
+				numberOneButtonTable.setWidget(i, j, numberButtonsOne.get(k));
+				numberTwoButtonTable.setWidget(i, j, numberButtonsTwo.get(k));
+				numberButtonsOne.get(k).setStyleName("number-button-style");
+				numberButtonsTwo.get(k).setStyleName("number-button-style");
 				k++;
 			}
 		}
-		numberButtons.add(new Button(buttonOptionArray[k],handler));
-		numberOneButtonTable.setWidget(3,0, numberButtons.get(k));
-		k++;
-		numberButtons.add(new Button(buttonOptionArray[k],handler));
-		numberOneButtonTable.setWidget(3,1, numberButtons.get(k));
+	
 		numberOneButtonTable.setVisible(false);
+		numberTwoButtonTable.setVisible(false);
 	}
 	
 	public void addOperatorButtons() {
 		for(int i = 0; i < operatorOptionArray.length; i++) {
 			operatorButtons.add(new Button(operatorOptionArray[i],handler));
-			operatorButtons.get(i).addClickHandler(handler);
-			operatorButtonTable.setWidget(0, i, new Button(operatorOptionArray[i]));
+			operatorButtonTable.setWidget(0, i, operatorButtons.get(i));
+			operatorButtons.get(i).setStyleName("number-button-style");
 		}
 		operatorButtonTable.setVisible(false);
 	}
@@ -133,7 +124,11 @@ public class Calculator implements EntryPoint {
 		double awnser = 0;
 		
 		if(operator.equals("/")) {
-			awnser = firstNumber/secondNumber;
+			if(secondNumber <= 0) {
+				awnser = 0.0;
+			}else {
+				awnser = firstNumber/secondNumber;
+			}
 		}else if(operator.equals("*")) {
 			awnser = firstNumber*secondNumber;
 		}else if(operator.equals("+")) {
@@ -147,17 +142,14 @@ public class Calculator implements EntryPoint {
 		}
 		
 		calcultions.add(new Calculation(firstNumber,secondNumber, operator, awnser));
-		
-		//Calculation[] calulations =  new Calculation[];
-		
-		calcTable.setText(0, 0, "equation");
-		calcTable.setText(0, 1, "awnser");
+
 		uppdateCalcTable();
 		
 		numberOne.setText("");
 		numberTwo.setText("");
 		operatorBox.setText("");
 	}
+	
 	public void uppdateCalcTable() {
 		
 		for(int i = 0; i < calcultions.size(); i++) {
@@ -178,6 +170,7 @@ public class Calculator implements EntryPoint {
 		      return false;
 		   }
 	}
+	
 	public boolean isOperator(String arg) {
 		
 		if(arg == "+"|| arg == "/"||arg == "*" ||
@@ -210,17 +203,28 @@ public class Calculator implements EntryPoint {
 		
 		@Override
 		public void onClick(ClickEvent event) {
-			Widget sender = (Widget) event.getSource();
-			for(int i = 0; i< operatorButtons.size(); i++) {
+			for(int i = 0; i < operatorButtons.size(); i++) {
 				if(event.getSource() == operatorButtons.get(i)) {
-					operatorBox.setText("" + operatorOptionArray[i]); 
+					String text = operatorOptionArray[i];
+					operatorBox.setText(text);
 				}
 			}
-			
-			
-			if(sender.equals(calcButton)) {
+			for(int i = 0; i <numberButtonsOne.size(); i++) {
+				if(event.getSource() == numberButtonsOne.get(i)) {
+					String text = buttonOptionArray[i];
+					numberOne.setText(numberOne.getText() + text);
+				}
+			}
+			for(int i = 0; i <numberButtonsTwo.size(); i++) {
+				if(event.getSource() == numberButtonsTwo.get(i)) {
+					String text = buttonOptionArray[i];
+					numberTwo.setText(numberTwo.getText() + text);
+					return;
+				}
+			}
+			if(event.getSource() == calcButton) {
 				if(!isOperator(operatorBox.getValue().trim()) || !isNumber(numberOne.getText().trim()) || !isNumber(numberTwo.getText().trim())) {
-					Window.alert("This calculator can only calculate Numbers and [ + / * % -] operators");
+					Window.alert("This calculator can only calculate Numbers and [ . + / * % -] operators");
 					return;
 				}
 					calculate();
@@ -230,11 +234,8 @@ public class Calculator implements EntryPoint {
 
 		@Override
 		public void onFocus(FocusEvent event) {
-			// TODO Auto-generated method stub
-			
 			// TODO Denna ska ta fram valen till att klicka 
 			// siffrorna 
-			
 			if(event.getSource() == numberOne){
 				numberOneButtonTable.setVisible(true);
 				operatorButtonTable.setVisible(false);
@@ -251,13 +252,17 @@ public class Calculator implements EntryPoint {
 				numberTwoButtonTable.setVisible(false);
 			}
 		}
-
 		
-			
-			
 	}
-
-	
+	public void addStyles() {
+		numberOne.setStyleName("number-box-style");
+		numberTwo.setStyleName("number-box-style");
+		operatorBox.setStyleName("operator-style");
+		numberOneButtonTable.setStyleName("number-table-style");
+		numberTwoButtonTable.setStyleName("number-table-style");
+		operatorButtonTable.setStyleName("number-table-style");
+		calcButton.setStyleName("calc-button-style");
+	}
 }
 
 

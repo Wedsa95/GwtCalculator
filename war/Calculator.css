@@ -1,31 +1,37 @@
 *{
 	font-family: arial;
-	font-style: bold;
-}
-body{
-	padding: 1em;
-	margin: 1em;
+	margin: 0px;
+	padding: 0px;
 }
 h1{
 	font-color: black;
 	margin:40px;
 }
-textBox{
-	width: 60px;
-	margin: 0 10px 0 10px;
-	
+.number-box-style{
+	font-size: 3em;
+	width: 3.6em;
+	border: 1px solid grey;	
+	border-style: solid none solid none;
 }
-operator-style{
-	width: 40px;
-	margin: 0 10px 0 10px;
+.operator-style{
+	font-size: 3em;
+	width:4.5em;
+	border: 1px solid grey;	
+	border-style: solid none solid none;
 }
-.hide{
-	visibility: collapse;
-}
-.show{
-	visibility: visible;
+.number-table-style{
+	border: 1px solid grey;	
 }
 .number-button-style{
-	width: 30px;
-	height: 30px;
+	border: none;
+	width: 3em;
+	height: 3em;
+	background-color:#f2f2f2;
+}
+.calc-button-style{
+	font-size:3em;
+	color:grey;
+	background-color:#f2f2f2;
+	border: 1px solid grey;	
+	border-style: solid none solid none;
 }
